@@ -1,0 +1,53 @@
+{
+  "name": "@shader-art/plugin-pointer-interactions",
+  "version": "0.1.2",
+  "description": "Pointer interactions for shader-art",
+  "repository": "shader-art/plugin-pointer-interactions",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "source": "./src/index.ts",
+  "unpkg": "./dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "import": "./dist/index.esm.js",
+    "require": "./dist/index.cjs"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "build": "npm run build:types -s && npm run build:js -s && npm run build:cjs -s",
+    "build:types": "tsc -d --emitDeclarationOnly",
+    "build:js": "esbuild --format=esm --bundle --minify src/index.ts > dist/index.esm.js",
+    "build:cjs": "esbuild --format=cjs --bundle --minify src/index.ts > dist/index.cjs",
+    "lint": "npm run lint:js -s && npm run lint:package -s",
+    "lint:js": "eslint src",
+    "lint:package": "npx @skypack/package-check",
+    "test": "npm run lint -s && jest -c jest.config.cjs"
+  },
+  "keywords": [
+    "webgl",
+    "glsl",
+    "creative-coding"
+  ],
+  "author": "Lea Rosema",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@typescript-eslint/eslint-plugin": "^4.15.0",
+    "@typescript-eslint/parser": "^4.15.0",
+    "@wessberg/pointer-events": "^1.0.9",
+    "esbuild": "^0.8.44",
+    "eslint": "^7.20.0",
+    "jest": "^26.6.3",
+    "jest-webgl-canvas-mock": "^0.2.3",
+    "ts-jest": "^26.5.1",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "@shader-art/plugin-base": "^0.1.1"
+  }
+}
