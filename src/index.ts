@@ -91,8 +91,8 @@ export class PointerInteractionsPlugin implements ShaderArtPlugin {
       return [0, 0];
     }
     const rect = hostElement.getBoundingClientRect();
-    const x = clamp((e.clientX - rect.top) / hostElement.clientWidth, 0, 1);
-    const y = clamp((e.clientY - rect.left) / hostElement.clientHeight, 0, 1);
+    const x = clamp((e.clientX - rect.left) / hostElement.clientWidth, 0, 1);
+    const y = clamp((e.clientY - rect.top) / hostElement.clientHeight, 0, 1);
     return [x, y];
   }
 
