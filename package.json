@@ -1,6 +1,6 @@
 {
   "name": "@shader-art/plugin-pointer-interactions",
-  "version": "0.1.2",
+  "version": "0.0.0",
   "description": "Pointer interactions for shader-art",
   "repository": "shader-art/plugin-pointer-interactions",
   "type": "module",
