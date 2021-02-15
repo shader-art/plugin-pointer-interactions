@@ -144,5 +144,5 @@ export class PointerInteractionsPlugin implements ShaderArtPlugin {
   }
 }
 
-export const PointerInteractionsPluginFactory = () =>
+export const PointerInteractionsPluginFactory = (): PointerInteractionsPlugin =>
   new PointerInteractionsPlugin();
