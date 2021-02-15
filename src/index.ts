@@ -19,8 +19,7 @@ export class PointerInteractionsPlugin implements ShaderArtPlugin {
   program: WebGLProgram | null = null;
   canvas: HTMLCanvasElement | null = null;
 
-  startX = NaN;
-  startY = NaN;
+  start: [number, number] = [NaN, NaN];
   dragging = false;
   pointerId = NaN;
   subscribers: PointerEventSubscriber[] = [];
@@ -58,8 +57,9 @@ export class PointerInteractionsPlugin implements ShaderArtPlugin {
     this.hostElement.releasePointerCapture(e.pointerId);
     this.pointerId = NaN;
     this.dragging = false;
+    const [x, y] = this.getRelativePosition(e);
     this.setUniformInt('dragging', 0);
-    this.notifySubscribers(e.clientX, e.clientY, false);
+    this.notifySubscribers(x, y, false);
   };
 
   onPointerDown = (e: PointerEvent): void => {
@@ -72,14 +72,29 @@ export class PointerInteractionsPlugin implements ShaderArtPlugin {
     }
     this.dragging = true;
     this.pointerId = e.pointerId;
-    this.startX = e.clientX / hostElement.clientWidth;
-    this.startY = e.clientY / hostElement.clientHeight;
+    this.start = this.getRelativePosition(e);
 
     hostElement.setPointerCapture(e.pointerId);
-    this.setUniformVec2('pointerStart', this.startX, this.startY);
-    this.setUniformVec2('pointer', this.startX, this.startY);
-    this.notifySubscribers(this.startX, this.startY, this.dragging);
+    this.setUniformVec2('pointerStart', this.start);
+    this.setUniformVec2('pointer', this.start);
+    this.notifySubscribers(this.start[0], this.start[1], this.dragging);
   };
+
+  /**
+   * Get pointer position relative to the element.
+   * @param e pointer event containing clientX/clientY
+   * @returns array containing x and y from (0..1)
+   */
+  private getRelativePosition(e: PointerEvent): [number, number] {
+    const { hostElement } = this;
+    if (!hostElement) {
+      return [0, 0];
+    }
+    const rect = hostElement.getBoundingClientRect();
+    const x = clamp((e.clientX - rect.top) / hostElement.clientWidth, 0, 1);
+    const y = clamp((e.clientY - rect.left) / hostElement.clientHeight, 0, 1);
+    return [x, y];
+  }
 
   onPointerMove = (e: PointerEvent): void => {
     const { hostElement } = this;
@@ -89,10 +104,9 @@ export class PointerInteractionsPlugin implements ShaderArtPlugin {
     if (e.pointerId !== this.pointerId) {
       return;
     }
-    const x = clamp(e.clientX / hostElement.clientWidth, 0, 1);
-    const y = clamp(e.clientY / hostElement.clientHeight, 0, 1);
-    this.setUniformVec2('pointer', x, y);
-    this.notifySubscribers(x, y, this.dragging);
+    const p = this.getRelativePosition(e);
+    this.setUniformVec2('pointer', p);
+    this.notifySubscribers(p[0], p[1], this.dragging);
   };
 
   private notifySubscribers(x: number, y: number, dragging: boolean): void {
@@ -113,11 +127,11 @@ export class PointerInteractionsPlugin implements ShaderArtPlugin {
     this.program = null;
   }
 
-  private setUniformVec2(variableName: string, x: number, y: number): void {
+  private setUniformVec2(variableName: string, vec2: [number, number]): void {
     const { gl, program } = this;
     if (gl && program) {
       const loc = gl.getUniformLocation(program, variableName);
-      gl.uniform2fv(loc, [x, y]);
+      gl.uniform2fv(loc, vec2);
     }
   }
 

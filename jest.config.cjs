@@ -1,5 +1,5 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  setupFiles: ['jest-webgl-canvas-mock'],
+  setupFiles: ['jest-webgl-canvas-mock', '@wessberg/pointer-events'],
 };

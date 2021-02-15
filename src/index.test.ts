@@ -11,10 +11,6 @@ function wait(timeout = 0): Promise<void> {
 
 describe('Pointer interactions test', () => {
   beforeAll(async () => {
-    if (!('PointerEvent' in window)) {
-      // @ts-ignore ts2306 not a module, fuck you typescript
-      await import('@wessberg/pointer-events');
-    }
     ShaderArtShim.register([() => new PointerInteractionsPlugin()]);
   });
 
