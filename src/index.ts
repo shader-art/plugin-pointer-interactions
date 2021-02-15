@@ -77,6 +77,7 @@ export class PointerInteractionsPlugin implements ShaderArtPlugin {
     hostElement.setPointerCapture(e.pointerId);
     this.setUniformVec2('pointerStart', this.start);
     this.setUniformVec2('pointer', this.start);
+    this.setUniformInt('dragging', 1);
     this.notifySubscribers(this.start[0], this.start[1], this.dragging);
   };
 
